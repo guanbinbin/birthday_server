@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- 千万注意不要在样式标签区域写注释，后果是灾难性的 -->
+    <meta charset="UTF-8">
+    <title>弹窗</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body{
+            font-family: Arial,Helvetica,sans-serif;
+            font-size: 17px;
+            text-align: justify;
+        }
+        #open_win_background {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: lightblue;
+        }
+
+        span {
+            color: white;
+            padding-top: 12px;
+            cursor: pointer;
+            padding-right: 15px;
+        }
+
+        #open_win_content {
+            background: #eeeeee;
+            width: 70%;
+            z-index: 1;
+            margin: 12% auto;
+            overflow: auto;
+        }
+
+        #open_win_main_content {
+            background: #eeeeee;
+            margin: auto;
+            height: 300px;
+            padding: 0 20px;
+        }
+        #hidden_vars {
+            display: none;
+        }
+
+        #open_win_close {
+            padding: 5px;
+            background: #5cd31b;
+        }
+
+        #open_win_close_btn {
+            float: right;
+            font-size: 30px;
+        }
+
+        #foot {
+            padding: 5px 0;
+            text-align: center;
+            background: #5cd31b;
+            color: white;
+        }
+
+        h2 {
+            margin: 10px 0;
+            color: white;
+            padding-left: 15px;
+        }
+
+        h3 {
+            margin: 0 0px;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+
+
+<body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<table id="main_table" border="1" width="300">
+    <caption style="color: deepskyblue" align="center">宾客礼金记录</caption>
+    <tr><th bgcolor="#ffd700" align="center">序列号</th><th bgcolor="#ffd700">嘉宾姓名</th><th bgcolor="#ffd700">赠送礼金</th><th bgcolor="#ffd700">出席人数</th><th bgcolor="#ffd700">录入时间</th></tr>
+    <tr><td id="id_19" bgcolor="ff69b4"><input type="submit" value="19" onclick="open_win(19)" /></td><td>李婷</td><td>200</td><td>0</td><td>2019-01-20 17:47:50</td></tr>
+    <tr><td id="id_16" bgcolor="ff69b4"><input type="submit" value="16" onclick="open_win(16)" /></td><td>李婷</td><td>200</td><td>6</td><td>2019-01-20 16:33:03</td></tr>
+</table>
+
+<!-- 弹窗 -->
+<div id="open_win_background" class="back">
+    <div id="open_win_content" class="content">
+        <div id="open_win_close">
+            <span id="open_win_close_btn">×</span>
+            <h2>宾客管理</h2>
+        </div>
+        <div id="open_win_main_content">
+            <div id="hidden_vars">
+                <label id="var_id">id</label>
+                <label id="var_name">姓名</label>
+                <label id="var_money">礼金</label>
+                <label id="var_attend_count">出席人数</label>
+            </div>
+            <p id="display_row"></p>
+
+            <input id="mod" type="radio"  name="mod_or_del" value="0" checked/>
+            <label for="mod">修改</label>
+            <input id="del" type="radio"  name="mod_or_del" value="1" />
+            <label for="del">删除</label>
+            <br/>
+            <span class="glyphicon glyphicon-user"></span>new姓名
+            <input id="name" type="text" onclick="" autocomplete="off">
+            <br/>
+            <span class="glyphicon glyphicon-usd"></span>new礼金
+            <input id="money" type="text" autocomplete="off">
+            <br/>
+            <span class="glyphicon glyphicon-calendar"></span>new人数
+            <input id="attend_count" type="text" autocomplete="off">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button onclick="manage_guest()" class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-search"></span>执行?
+            </button>
+        </div>
+        <h3 id="foot"></h3>
+    </div>
+</div>
+<!-- 弹窗内容结束 -->
+<script >
+    var tableHeadPre = "<table id=\"sub_tab\" border=\"1\" width=\"300\">\n"+
+            "<caption style=\"color: orange\" align=\"center\">您试图操作的宾客如下</caption>\n" +
+            "<tr><th bgcolor=\"#ffd700\" align=\"center\">序列号</th><th bgcolor=\"#ffd700\">嘉宾姓名</th><th bgcolor=\"#ffd700\">赠送礼金</th><th bgcolor=\"#ffd700\">出席人数</th><th bgcolor=\"#ffd700\">录入时间</th></tr>\n"
+    var bg_open = document.getElementById('open_win_background');
+    var close_btn = document.getElementById("open_win_close_btn");
+
+    close_btn.onclick = function close() {
+        bg_open.style.display = "none";
+    }
+
+    function open_win(IdStr)
+    {
+        var mainTable = document.getElementById("main_table");
+        var tarId = -1;
+        var theId = parseInt(IdStr);
+        //表格列数
+        // var cells = mainTable.rows.item(0).cells.length ;
+        for (i = 1; i < mainTable.rows.length; i++)
+        {
+            var factId = id_counter(mainTable.rows[i].innerHTML);
+            if (factId == null || factId == undefined || factId == -1)
+            {
+                continue;
+            }
+            if(factId == theId)
+            {
+                tarId = theId;
+                break;
+            }
+        }
+        if(tarId == -1)
+        {
+            alert("没有此记录: id="+IdStr);
+            return "";
+        }
+        $.ajax({
+            type: "POST",           //方法类型
+            dataType: "json",       //预期服务器返回的数据类型
+            url: "/manage/query_guest",   //url
+            data:
+                    {
+                        "option": 0,
+                        "paras[]": [theId],
+                    },
+            success: function (data) {
+                jsonData = JSON.stringify(data)
+                alert(jsonData);
+                var ack = JSON.parse(jsonData);
+                if (ack.ErrCode == 0 && ack.ErrMsg =="ok")
+                {
+                    draw_table(ack);
+                }
+                console.log(data);
+            },
+            error: function (err) {
+                //fixme
+                draw_table_v2();
+                console.log(err.responseText);
+                // alert(JSON.stringify(err));
+                var myDate = new Date()
+                document.getElementById("foot").innerHTML = myDate.toLocaleString()
+            }
+        });
+    }
+
+    function draw_table(ack)
+    {
+        var ret = "";
+        for(i = 0; i < ack.Data.length; i++)
+        {
+            var each = ack.Data[i]
+            ret = "<td bgcolor=\"ff69b4\">+each.Id+</td><td>+each.Name+</td><td>+each.Money+</td><td>+each.AttendCount+</td><td>+each.EntryTime+</td>";
+            ret = "<td bgcolor=\"ff69b4\">+19+</td><td>+李婷+</td><td>+200+</td><td>+0+</td><td>+操你妈+</td>";
+            if(i == 0)
+            {
+                document.getElementById("var_id").innerHTML = each.Id;
+                document.getElementById("var_name").innerHTML = each.Name;
+                document.getElementById("var_money").innerHTML = each.Money;
+                document.getElementById("var_attend+_count").innerHTML = each.AttendCount;
+            }
+        }
+        bg_open.style.display = "block";
+        document.getElementById("display_row").innerHTML = tableHeadPre + ret + "</table>"
+        var myDate = new Date()
+        document.getElementById("foot").innerHTML = myDate.toLocaleString()
+    }
+
+    function draw_table_v2()
+    {
+        var ret = "";
+        ret = "<td bgcolor=\"ff69b4\">19</td><td>李婷</td><td>200</td><td>+0+</td><td>操你妈</td>";
+        bg_open.style.display = "block";
+        document.getElementById("display_row").innerHTML = tableHeadPre + ret + "</table>"
+        {
+            document.getElementById("var_id").innerHTML = 19;
+            document.getElementById("var_name").innerHTML = "李婷";
+            document.getElementById("var_money").innerHTML = 666;
+            document.getElementById("var_attend_count").innerHTML = 1;
+        }
+    }
+
+    function id_counter(htmlText)
+    {
+        if(htmlText == null || htmlText == "")
+        {
+            alert("html text is invalid");
+            return -1
+        }
+        var len = htmlText.length
+        var start = htmlText.indexOf("id_")
+        if(start + 3 >= len)
+        {
+            alert("该行数据无效:" + htmlText)
+            return -1
+        }
+        var leftText = htmlText.substring(start + 3, len)
+        var ret = parseInt(leftText)
+        return ret
+    }
+
+    function manage_guest()
+    {
+        var var_list = user_managed_info();
+        var old_id = var_list[0];
+        var choice = -1;
+        var url = "/manage/mod_guest";
+        var arg_obj = {};
+        if(old_id == null || old_id == undefined)
+        {
+            alert("请选择指定操作的记录!");
+            return;
+        }
+        var radio = document.getElementsByName("mod_or_del");
+        for(var i = 0;i < radio.length; i++)
+        {
+            if(radio[i].checked)
+            {
+                choice = parseInt(radio[i].value);
+                break;
+            }
+        }
+        if(choice == -1)
+        {
+            alert("请选择操作类型");
+            return;
+        }
+        switch (choice)
+        {
+            case 0:
+                arg_obj.id = old_id;
+                var new_name  = document.getElementsByName("name").value;
+                var new_money = document.getElementsByName("money").value;
+                var new_attend_count = document.getElementsByName("attend_count").value;
+                if (new_name != null || new_name != undefined)
+                {
+                    arg_obj.name = new_name;
+                }
+                if (new_money != null |new_money != undefined)
+                {
+                    arg_obj.money = new_money;
+                }
+                if (new_attend_count != null || new_attend_count != undefined)
+                {
+                    arg_obj.count = new_attend_count;
+                }
+                break;
+            case 1:
+                url = "/manage/del_guest";
+                arg_obj.id = old_id;
+                break;
+            default:
+                alert("暂不支持该管理操作");
+                return;
+        }
+        $.ajax({
+            type: "POST",           //方法类型
+            dataType: "json",       //预期服务器返回的数据类型
+            url:  url,
+            data: arg_obj,
+            success: function (data) {
+                jsonData = JSON.stringify(data)
+                alert(jsonData);
+                var ack = JSON.parse(jsonData);
+                if (ack.ErrCode == 0 && ack.ErrMsg =="ok")
+                {
+                    console.log(data);
+                }
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    }
+
+    function user_managed_info()
+    {
+        var old_id  = -1;
+        var old_name = "";
+        var old_money= 0;
+        var old_attend_count = 0;
+        old_id = parseInt(document.getElementById("var_id").innerHTML);
+        old_name = document.getElementById("var_name").innerHTML;
+        old_money = parseInt(document.getElementById("var_money").innerHTML);
+        old_attend_count = parseInt(document.getElementById("var_attend_count").innerHTML);
+        return [old_id, old_name, old_money, old_attend_count];
+    }
+</script>
+</body>
+</html>

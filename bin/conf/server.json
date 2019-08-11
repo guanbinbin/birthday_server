@@ -1,0 +1,10 @@
+{
+  "LogPath": "bin/log/",
+  "LogLevel": 2,
+  "ConfPath": "bin/conf/",
+  "MaxHouseHoldBooked": 80,
+  "MaxTableBooked": 16,
+  "MaxGuestPersonBooked": 160,
+  "MoneyPackForBackVal": 12,
+  "MoneyPackForTeaVal":4
+}

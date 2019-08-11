@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/open_win.css">
+    <style>
+        body{
+            background-color: bisque;
+            font-family: Arial,Helvetica,sans-serif;
+            font-size: 14px;
+            text-align: justify;
+        }
+
+        .btn-style{
+            background-color:red
+        }
+
+
+    </style>
+</head>
+
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../static/js/common.js"></script>
+<script src="../static/js/add.js"></script>
+<script src="../static/js/query.js"></script>
+
+
+<body>
+<div class="container">
+    <div class="medium-3 columns">
+        <button  class="btn btn-info btn-lg" disabled="disabled">
+            <span class="glyphicon glyphicon-user"></span>姓 名
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="name" type="text" onclick="" autocomplete="off">
+    </div>
+    <br/>
+    <div class="medium-3 columns">
+        <button  class="btn btn-info btn-lg" disabled="disabled">
+            <span class="glyphicon glyphicon-usd"></span>礼 金
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="money" type="text" autocomplete="off">
+    </div>
+
+    <br/>
+    <div class="medium-3 columns">
+        <button  class="btn btn-info btn-lg" disabled="disabled">
+            <span class="glyphicon glyphicon-calendar"></span>人 数
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="attend_count" type="text" autocomplete="off">
+    </div>
+    <br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button onclick="add_new_guest()" class="btn-style">
+        <span class="glyphicon glyphicon-heart-empty"></span>加 入
+    </button>
+
+    <div>
+        <p id="guest_query_table"></p>
+        <p id="result_hint"></p>
+        <label id="total_house_num"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label id="total_guest_num"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label id="total_guest_money"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <br/><br/><label style="color: deepskyblue" align="center">search导航</label><br/>
+        <select id="query_options">
+            <option value ="-1">none</option>
+            <option value ="1" selected = "selected">全名查找</option>
+            <option value="2">姓氏查找</option>
+            <option value="3">礼金范围查找</option>
+            <option value="4">全部</option>
+        </select>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="glyphicon glyphicon-hand-right"></span>
+        <label style="color: gold" align="center"/>参数1
+        <input id="para1" style="height:20px;width:80px"autocomplete="off"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="glyphicon glyphicon-hand-right"></span>
+        <label style="color: gold" align="center"/>参数2
+        <input id="para2" style="height:20px;width:80px"autocomplete="off"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="query_guest()" class="btn-style">
+            <span class="glyphicon glyphicon-search"></span>GO
+        </button>
+        <br/>
+    </div>
+</div>
+
+<!-- 弹窗 -->
+<div id="open_win_background" class="back">
+    <div id="open_win_content" class="content">
+        <div id="open_win_close">
+            <span id="open_win_close_btn">×</span>
+            <h2>宾客管理</h2>
+        </div>
+        <div id="open_win_main_content">
+            <div id="hidden_vars">
+                <label id="var_id">id</label>
+                <label id="var_name">姓名</label>
+                <label id="var_money">礼金</label>
+                <label id="var_attend_count">出席人数</label>
+            </div>
+            <p id="display_row"></p>
+
+            <input id="mod" type="radio"  name="mod_or_del" value="0" checked/>
+            <label for="mod">修改</label>
+            <input id="del" type="radio"  name="mod_or_del" value="1" />
+            <label for="del">删除</label>
+            <br/>
+            <span class="glyphicon glyphicon-user"></span>new姓名
+            <input id="name_v2" type="text" onclick="" autocomplete="off">
+            <br/>
+            <span class="glyphicon glyphicon-usd"></span>new礼金
+            <input id="money_v2" type="text" autocomplete="off">
+            <br/>
+            <span class="glyphicon glyphicon-calendar"></span>new人数
+            <input id="attend_count_v2" type="text" autocomplete="off">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button onclick="manage_guest()" class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-search"></span>执行?
+            </button>
+        </div>
+        <h3 id="foot"></h3>
+    </div>
+</div>
+<!-- 弹窗内容结束 -->
+<script>
+</script>
+<script src="../static/js/mod_del.js"></script>
+</body>
+</html>
